@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import math
 
-pltShow = False
+pltShow = True
 
 # Fonction pour afficher un graphique de dispersion
 def ShowGraph(array1, array2, title, xlabel, ylabel):
@@ -32,7 +32,7 @@ def ShowMatrix(array):
 
 
 # Chargement des données depuis un fichier Excel
-dataMatrix = pd.read_excel("C:\\Users\\exe\\Desktop\\Scripts\\Coding\\Python\\Projects\\Data Analyst\\autos_acp.xls").to_numpy().T
+dataMatrix = pd.read_excel("C:\\Users\\achraf\\Desktop\\donnee\\Projet-Data-Analyst\\Projects\\Data Analyst\\autos_acp.xls").to_numpy().T
 dataMatrix_CR = dataMatrix
 
 # Suppression de certaines lignes spécifiques de la matrice
@@ -99,13 +99,59 @@ vector2 = dataMatrix_CR.T @ v2
 # Affichage du graphique des deux premiers axes principaux
 ShowGraph(vector1, vector2, "Nuage des individus", "F1(68.54%)", "F2(16.67%)")
 
-# cercle_correlation = []
-# eig = np.linalg.eig(Mat_de_Correlation)
-# landas = eig.eigenvalues
-# vectors = eig.eigenvectors
-# for i in range(len(dataMatrix_CR)):
-#     for j in range(len(dataMatrix_CR)):
-#         cercle_correlation += [vectors[i][j] * math.sqrt(landas[j])]
-        
-# ShowGraph(cercle_correlation, "Cercle de Corrélation",  "F1(68.54%)", "F2(16.67%)")
+eig = np.linalg.eig(Mat_de_Correlation)
+landas = eig.eigenvalues
+vectors = eig.eigenvectors
+
+def matriceCorrelation() :
+    cercle_correlation = []
+    for i in range(len(dataMatrix_CR)):
+        temp = []
+        for j in range(len(dataMatrix_CR)):
+            temp += [vectors[i][j] * math.sqrt(landas[j])]
+        cercle_correlation += [temp]
+    
+    cercle_correlation = np.array(cercle_correlation, dtype=float)
+    return cercle_correlation
+
+cercle_correlation = matriceCorrelation()
+print(cercle_correlation)
+ShowMatrix(cercle_correlation)
+
+def ShowCircleCorrelation() :
+    fig, ax = plt.subplots()
+    ax.set_xlim(-1, 1)
+    ax.set_ylim(-1, 1)
+    ax.set_aspect('equal', adjustable='box')
+    ax.axhline(0, color='black', linewidth=1)  # Axe horizontal
+    ax.axvline(0, color='black', linewidth=1)  # Axe vertical
+    circle = plt.Circle((0, 0), 1, color='blue', fill=False, linestyle='-')  # Cercle de corrélation
+    ax.add_artist(circle)
+    plt.title("Cercle de corrélation")
+    plt.xlabel("F1")
+    plt.ylabel("F2")
+    plt.grid()  # Grille
+    for i in range(len(cercle_correlation)):
+        x = cercle_correlation[i][0]
+        y = cercle_correlation[i][1]
+        plt.plot(x, y, 'o', color='blue')
+        plt.text(x, y, str(i), fontsize=12, ha='right', va='bottom')
+    plt.show()
+ShowCircleCorrelation()
+
+# Calcul de la qualité de représentation des individus
+qualite_representation = []
+def RepresentationQuality() :
+    for i in range(len(dataMatrix_CR.T)):
+        somme_carres = vector1[i]**2 + vector2[i]**2
+        qualite_representation.append([
+            (vector1[i]**2) / somme_carres,
+            (vector2[i]**2) / somme_carres
+        ])
+    return qualite_representation
+ShowMatrix(RepresentationQuality())
+# Affichage de la qualité de représentation
+print("Qualité de représentation des individus :")
+for i, qualite in enumerate(qualite_representation):
+    print(f"Individu {i + 1}: F1 = {qualite[0]:.2f}, F2 = {qualite[1]:.2f}")
 
