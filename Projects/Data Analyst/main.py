@@ -32,7 +32,7 @@ def ShowMatrix(array):
 
 
 # Chargement des données depuis un fichier Excel
-dataMatrix = pd.read_excel("C:\\Users\\achraf\\Desktop\\donnee\\Projet-Data-Analyst\\Projects\\Data Analyst\\autos_acp.xls").to_numpy().T
+dataMatrix = pd.read_excel("C:\\Users\\exe\\Desktop\\Scripts\\Coding\\Python\\Projects\\Data Analyst\\autos_acp.xls").to_numpy().T
 dataMatrix_CR = dataMatrix
 
 # Suppression de certaines lignes spécifiques de la matrice
@@ -142,16 +142,16 @@ ShowCircleCorrelation()
 # Calcul de la qualité de représentation des individus
 qualite_representation = []
 def RepresentationQuality() :
+    print(len(dataMatrix_CR), len(dataMatrix_CR[0]))
     for i in range(len(dataMatrix_CR.T)):
-        somme_carres = vector1[i]**2 + vector2[i]**2
-        qualite_representation.append([
-            (vector1[i]**2) / somme_carres,
-            (vector2[i]**2) / somme_carres
-        ])
+        somme_carres = np.linalg.norm(dataMatrix_CR.T[i], 2)**2
+        q1 = (vector1[i]**2) / somme_carres
+        q2 = (vector2[i]**2) / somme_carres
+        qualite_representation.append([q1,q2,q1+q2])
     return qualite_representation
 ShowMatrix(RepresentationQuality())
 # Affichage de la qualité de représentation
 print("Qualité de représentation des individus :")
 for i, qualite in enumerate(qualite_representation):
-    print(f"Individu {i + 1}: F1 = {qualite[0]:.2f}, F2 = {qualite[1]:.2f}")
+    print(f"Individu {i + 1}: F1 = {qualite[0]:.2f}, F2 = {qualite[1]:.2f}, somme = {qualite[0] + qualite[1]}")
 
