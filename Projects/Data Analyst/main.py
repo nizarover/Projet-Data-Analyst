@@ -32,7 +32,7 @@ def ShowMatrix(array):
 
 
 # Chargement des données depuis un fichier Excel
-dataMatrix = pd.read_excel("C:\\Users\\exe\\Desktop\\Scripts\\Coding\\Python\\Projects\\Data Analyst\\autos_acp.xls").to_numpy().T
+dataMatrix = pd.read_csv("C:\\Users\\achraf\\Desktop\\donnee\\Projet-Data-Analyst\\Projects\\Data Analyst\\diabetes.csv").to_numpy().T
 dataMatrix_CR = dataMatrix
 
 # Suppression de certaines lignes spécifiques de la matrice
