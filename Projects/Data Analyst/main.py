@@ -32,14 +32,16 @@ def ShowMatrix(array):
 
 
 # Chargement des données depuis un fichier Excel
-dataMatrix = pd.read_csv("C:\\Users\\achraf\\Desktop\\donnee\\Projet-Data-Analyst\\Projects\\Data Analyst\\diabetes.csv").to_numpy().T
+dataMatrix = pd.read_csv("C:\\Users\\exe\\Desktop\\Scripts\\Coding\\Python\\Projects\\Data Analyst\\diabetes.csv").to_numpy().T
+
+print(pd.DataFrame(dataMatrix).T)
 dataMatrix_CR = dataMatrix
 
 # Suppression de certaines lignes spécifiques de la matrice
 dataMatrix_CR = np.delete(dataMatrix_CR, 7, axis=0)  # Suppression de la ligne 7
 dataMatrix_CR = np.delete(dataMatrix_CR, 0, axis=0)  # Suppression de la ligne 0
 
-ShowGraph(dataMatrix_CR[0], dataMatrix_CR[1], "Comparaison Entre nombre de cycles et puissance d'une voiture \n avant centrage et réduction", "nombre de cycles", "puissance")
+ShowGraph(dataMatrix_CR[0], dataMatrix_CR[1], "Comparaison Entre le taux de Glucose et le taux d'Insulin \n avant centrage et réduction", "Glucose", "Insulin")
 
 # Normalisation des variables (centrage et réduction)
 for variable in dataMatrix_CR:
@@ -48,7 +50,7 @@ for variable in dataMatrix_CR:
     for i in range(len(variable)):
         variable[i] = (variable[i] - moyenne) / ecart_type  # Normalisation
 
-ShowGraph(dataMatrix_CR[0], dataMatrix_CR[1], "Comparaison Entre nombre de cycles et puissance d'une voiture \n après centrage et réduction", "nombre de cycles", "puissance")
+ShowGraph(dataMatrix_CR[0], dataMatrix_CR[1], "Comparaison Entre le taux de Glucose et le taux d'Insulin \n après centrage et réduction", "Glucose", "Insulin")
 
 # Calcul de la matrice de corrélation
 
@@ -72,7 +74,9 @@ inertie_explique = [[index, val] for index, val in valpropre_indexed]
 for i in range(len(inertie_explique)):
     inertie_explique[i][1] *= 100 / sum(valPropres)  # Conversion en pourcentage
 
-print(inertie_explique)  # Affichage de l'inertie expliquée
+# Tri par la deuxième colonne (valeur d'inertie expliquée)
+inertie_explique.sort(key=lambda x: x[1], reverse=True)
+print(inertie_explique)  # Affichage de l'inertie expliquée triée
 
 # Calcul de l'inertie cumulée
 inertie_cumule = [[index, val] for index, val in inertie_explique]
@@ -89,15 +93,15 @@ valPropres.remove(landa1)
 landa2 = max(valPropres)
 
 # Calcul des vecteurs propres associés
-v1 = np.linalg.eig(Mat_de_Correlation)[1][:, np.argmax(np.linalg.eigvals(Mat_de_Correlation))]
-v2 = np.linalg.eig(Mat_de_Correlation)[1][:, np.argmax(np.linalg.eigvals(Mat_de_Correlation) == landa2)]
+v1 = np.linalg.eig(Mat_de_Correlation)[1][:, inertie_explique[0][0]]
+v2 = np.linalg.eig(Mat_de_Correlation)[1][:, inertie_explique[1][0]]
 
 # Projection des données sur les deux premiers axes principaux
 vector1 = dataMatrix_CR.T @ v1
 vector2 = dataMatrix_CR.T @ v2
 
 # Affichage du graphique des deux premiers axes principaux
-ShowGraph(vector1, vector2, "Nuage des individus", "F1(68.54%)", "F2(16.67%)")
+ShowGraph(vector1, vector2, "Nuage des individus", "F1(33.31%)", "F2(16.37%)")
 
 eig = np.linalg.eig(Mat_de_Correlation)
 landas = eig.eigenvalues
@@ -143,7 +147,7 @@ ShowCircleCorrelation()
 qualite_representation = []
 def RepresentationQuality() :
     print(len(dataMatrix_CR), len(dataMatrix_CR[0]))
-    for i in range(len(dataMatrix_CR.T)):
+    for i in range(18):
         somme_carres = np.linalg.norm(dataMatrix_CR.T[i], 2)**2
         q1 = (vector1[i]**2) / somme_carres
         q2 = (vector2[i]**2) / somme_carres
