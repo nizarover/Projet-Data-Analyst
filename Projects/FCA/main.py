@@ -28,7 +28,6 @@ def Add_Total(dataset):
     return dataset
 Effectifs = Add_Total(dataset)
 
-
 Effectifs_CR = Effectifs.copy()
 Effectifs_CR = Effectifs_CR.iloc[:len_rows,1:len_columns]
 # Center and reduce the contingency table
