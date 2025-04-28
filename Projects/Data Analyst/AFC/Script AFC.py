@@ -8,7 +8,7 @@ import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
-dataset = pd.read_excel("C:\\Users\\exe\\Desktop\\Scripts\\Coding\\Python\\Projects\\Data Analyst\\AFC\\nobel.xlsx") # Load data
+dataset = pd.read_excel("C:\\Users\\exe\\Desktop\\Scripts\\Coding\\Python\\Projects\\Data Analyst\\AFC\\HairEyeColor.xlsx") # Load data
 
 rows_index = dataset.iloc[:,0] # Nom des Lignes
 print(rows_index)
@@ -110,7 +110,18 @@ def Matrice_Corrige(Freq): # function : Matrice corrigé
 MatCorr = Matrice_Corrige(Freq) # Matrice Corrigé
 print(MatCorr)
 
-U, s, Vt = np.linalg.svd(MatCorr, full_matrices=False) # Calcule SVD
+def Ecart_Corrige(Freq):
+    res = Freq.copy()
+    for i in range(Freq.shape[0]):
+        for j in range(Freq.shape[1]):
+            eff_theorique = somme_ligne[i] * somme_colonne[j]
+            res.iloc[i,j] = (Freq.iloc[i,j] - eff_theorique) / np.sqrt(eff_theorique)
+    return res
+
+ecarts_corriges = Ecart_Corrige(Freq)
+print(ecarts_corriges)
+
+U, s, Vt = np.linalg.svd(ecarts_corriges, full_matrices=False) # Calcule SVD
 # U : vecteurs propres (lignes)
 # s : valeurs singulières (racines carrées des valeurs propres)
 # Vt : vecteurs propres (colonnes)
